@@ -16,8 +16,8 @@ def triu_off_diag_to_mat(triu1vec):
     n = num_mat_rows(triu1vec.size)
     mat = np.zeros((n, n))
     idx = 0
-    for r_idx in range(n):
-        for c_idx in range(r_idx + 1, n):
-            mat[r_idx, c_idx] = triu1vec[idx]
-            idx += 1
+    for r in range(n):
+        num_cols = n-r-1
+        mat[r, r+1:n] = triu1vec[idx:idx+num_cols]
+        idx += num_cols
     return mat

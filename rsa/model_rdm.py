@@ -41,8 +41,7 @@ class ModelRDM:
     def apply(self, processes=1, chunksize=10, do_disable_tqdm=False):
 
         triu_rows, triu_cols = self.get_triu_rows_cols()
-        if self.model_rdm_triu is None:
-            self.model_rdm_triu = np.zeros((triu_rows.size,)) + ENTRY_EMPTY
+        self._init_model_rdm_triu()
 
         with mp.get_context("spawn").Pool(processes=processes) as pool:
             result = pool.starmap(self.dissimilarity,

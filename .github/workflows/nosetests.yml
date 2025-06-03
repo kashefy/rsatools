@@ -53,7 +53,7 @@ jobs:
          source activate test-env
          python --version
          conda install -q nose coveralls
-         nosetests --with-coverage
+         nosetests --exe --with-coverage
 
     # Step to run nosetests without coverage for Python 3.11
     - name: Unit Testing without coverage
@@ -66,13 +66,7 @@ jobs:
          ls
          cd ..
          nosetests --exe -v
-    
-    #~ - name: Unit Testing
-      #~ run: |
-        #~ source activate test-env
-        #~ python --version
-        #~ conda install -q nose coveralls conda-forge::coverage=6.5.2
-        #~ nosetests --with-coverage
+         
     - name: Coveralls
       uses: AndreMiras/coveralls-python-action@develop
       with:

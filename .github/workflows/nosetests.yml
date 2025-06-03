@@ -65,7 +65,7 @@ jobs:
          pwd
          ls
          cd ..
-         nosetests -v
+         nosetests --exe -v
     
     #~ - name: Unit Testing
       #~ run: |

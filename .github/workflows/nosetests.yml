@@ -50,7 +50,7 @@ jobs:
       run: |
         source activate test-env
         python --version
-        conda install -q nose coverage coveralls
+        conda install -q nose coveralls conda-forge::coverage
         nosetests --with-coverage
     - name: Coveralls
       uses: AndreMiras/coveralls-python-action@develop

@@ -64,6 +64,7 @@ jobs:
          conda install -q nose coveralls
          pwd
          ls
+         cd ..
          nosetests -v
     
     #~ - name: Unit Testing

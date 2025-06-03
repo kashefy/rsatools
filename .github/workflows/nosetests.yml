@@ -62,7 +62,7 @@ jobs:
          source activate test-env
          python --version
          conda install -q nose coveralls
-         nosetests
+         nosetests -v
     
     #~ - name: Unit Testing
       #~ run: |

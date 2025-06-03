@@ -62,9 +62,6 @@ jobs:
          source activate test-env
          python --version
          conda install -q nose coveralls
-         pwd
-         ls
-         cd ..
          nosetests --exe
          
     - name: Coveralls

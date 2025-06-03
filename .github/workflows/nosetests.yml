@@ -65,7 +65,7 @@ jobs:
          pwd
          ls
          cd ..
-         nosetests --exe -v
+         nosetests --exe
          
     - name: Coveralls
       uses: AndreMiras/coveralls-python-action@develop

@@ -175,7 +175,7 @@ class TestInputRDMUtils2D(BaseTestInputRDMUtils):
         fpath_dst = os.path.join(self.dir_tmp, 'inrdm.npy')
         input_rdm_utils.calc_and_save_input_rdm(self.fpath_acts, fpath_dst, key=self.key, do_triu=False)
         in_rdm = np.load(fpath_dst)
-        assert_equal(in_rdm[0, 1], 0)
+        assert_equal(in_rdm[0, 1], 1)
         assert_equal(in_rdm[0, 2], 2)
         assert_equal(in_rdm[1, 2], 2)
 

@@ -46,17 +46,35 @@ jobs:
     - name: show python path
       run: |
          python -c "import sys; print('\n'.join(sys.path))"
-    - name: Unit Testing
+         
+    - name: Unit Testing with coverage
+      if: matrix.python-version != '3.11'
       run: |
-        source activate test-env
-        python --version
-        conda install -q nose coveralls conda-forge::coverage=6.5.2
-        nosetests --with-coverage
+         source activate test-env
+         python --version
+         conda install -q nose coveralls
+         nosetests --with-coverage
+
+    # Step to run nosetests without coverage for Python 3.11
+    - name: Unit Testing without coverage
+      if: matrix.python-version == '3.11'
+      run: |
+         source activate test-env
+         python --version
+         conda install -q nose coveralls
+         nosetests
+    
+    #~ - name: Unit Testing
+      #~ run: |
+        #~ source activate test-env
+        #~ python --version
+        #~ conda install -q nose coveralls conda-forge::coverage=6.5.2
+        #~ nosetests --with-coverage
     - name: Coveralls
       uses: AndreMiras/coveralls-python-action@develop
       with:
         parallel: true
-        flag-name: Unit Testing
+        flag-name: Unit Testing with coverage
         
   finish:
     needs: build

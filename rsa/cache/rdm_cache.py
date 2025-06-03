@@ -30,5 +30,16 @@ class RDMCache:
         self.cache_dict[key] = value
 
     def get(self, x, y, default_value):
+        """
+        Retrieves a cached value for a pair of elements.
+
+        Args:
+            x (str): First element.
+            y (str): Second element.
+            default_value: Value to return if the pair is not in the cache.
+
+        Returns:
+            Cached value or the default value.
+        """
         key = _get_key(x, y)
         return self.cache_dict.get(key, default_value)

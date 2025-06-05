@@ -1,12 +1,4 @@
-import multiprocessing as mp
-import errno
-from pathlib import Path
-import os
-from tqdm import tqdm
 import numpy as np
-from rsa.model_rdm_utils import calc_spearman_rank_corr_from_files, ENTRY_EMPTY
-from rsa.rdm_loader import RDMLoaderNPY
-import rsa.mat_utils as mutils
 from rsa.cache.rdm_cache import RDMCache
 from rsa.model_rdm import ModelRDM
 

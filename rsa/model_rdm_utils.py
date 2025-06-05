@@ -3,9 +3,7 @@ from tqdm import tqdm
 import numpy as np
 import pandas as pd
 from scipy.stats import spearmanr
-import rsa.mat_utils as mutils
 from rsa.input_rdm_utils import get_input_rdm_flat_from_file
-from rsa.rdm_loader import RDMLoaderNPY
 
 ENTRY_EMPTY = -999
 

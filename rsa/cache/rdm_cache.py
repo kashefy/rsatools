@@ -44,14 +44,13 @@ class RDMCache:
                 flist.add(x)
                 flist.add(y)
             flist = sorted(list(flist))
-            self.cache_dict['flist'] = flist
 
             cache_dict_mapped = {}
             for k, v in self.cache_dict.items():
                 x, y = self.key_handler.split(k)
                 xi = flist.index(x)
                 yi = flist.index(y)
-                k_new = self.key_handler.join(xi, yi)
+                k_new = self.key_handler.join(str(xi), str(yi))
                 cache_dict_mapped[k_new] = v
 
             h.write(yaml.dump({

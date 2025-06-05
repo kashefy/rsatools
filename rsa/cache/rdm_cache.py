@@ -19,18 +19,18 @@ class RDMCache:
 
             elif version == 250605:
 
-                if 'cache' in self.cache_dict and 'flist' in self.cache_dict:
-                    flist = self.cache_dict['flist']
-                    cache_dict_mapped = self.cache_dict['cache']
-                    separator = self.cache_dict.get('separator', self.key_handler.separator)
+                if 'cache' in data and 'flist' in data:
+                    flist = data['flist']
+                    cache_dict_mapped = data['cache']
+                    separator = data.get('separator', self.key_handler.separator)
+                    # update separator
                     self.key_handler.separator = separator
-                    for k, v in self.cache_dict.items():
+                    for k, v in data['cache'].items():
                         xi, yi = self.key_handler.split(k)
-                        x = flist[xi]
-                        y = flist[yi]
+                        x = flist[int(xi)]
+                        y = flist[int(yi)]
                         k_new = self.key_handler.join(x, y)
-                        cache_dict_mapped[k_new] = v
-                    self.cache_dict = cache_dict_mapped
+                        self.cache_dict[k_new] = v
                 else:
                     raise KeyError("Cache file does not contain 'cache' or 'flist' keys.")
 
@@ -43,8 +43,8 @@ class RDMCache:
                 x, y = self.key_handler.split(k)
                 flist.add(x)
                 flist.add(y)
-
-            self.cache_dict['flist'] = list(flist)
+            flist = sorted(list(flist))
+            self.cache_dict['flist'] = flist
 
             cache_dict_mapped = {}
             for k, v in self.cache_dict.items():

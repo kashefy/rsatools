@@ -53,7 +53,7 @@ jobs:
          source activate test-env
          python --version
          conda install -q nose coveralls
-         nosetests --exe --with-coverage
+         nosetests --exe --with-coverage --cover-package rsa
       
     - name: Run unittest tests
       if: matrix.python-version != '3.11'

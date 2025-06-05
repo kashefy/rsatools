@@ -2,6 +2,7 @@ from nose import tools
 from nose.tools import assert_equal, \
     assert_true, assert_false, \
     assert_raises, assert_list_equal
+from unittest.mock import patch
 import os
 import tempfile
 import shutil
@@ -65,8 +66,9 @@ class TestModelRDMInput2DMat:
         return mrdm
 
     def test_calc_model_rdm_size(self):
+
         for sz_in_rdm in range(3, 4):
-            for num_rdms in range(2, 5):
+            for num_rdms in [2, 5]:
                 fp_in_rdms = []
                 for rdm_idx in range(num_rdms):
                     rdm = rand_rdm(sz_in_rdm)
@@ -121,7 +123,6 @@ class TestModelRDMInput2DMat:
 class TestModelRDMInput2DMatNPZ(TestModelRDMInput2DMat):
 
     def helper_calc_model_rdm(self, flist):
-
         # switch from npy to npz
         flist_npz = []
         for fp in flist:
@@ -137,10 +138,10 @@ class TestModelRDMInput2DMatNPZ(TestModelRDMInput2DMat):
         mrdm = m.apply(do_disable_tqdm=True)
         return mrdm
 
+
 class TestModelRDMInput2DMaInMemory(TestModelRDMInput2DMat):
 
     def helper_calc_model_rdm(self, flist):
-
         # switch from npy to in-memory
         list_irdm = [np.load(fp) for fp in flist]
 

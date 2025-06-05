@@ -22,5 +22,4 @@ class FilePairsCrossList(FilePairs):
         # Generate pairs between the two lists
         fpairs = list(product(flist1, flist2))
         fpairs = sorted([(a, b) for a, b in fpairs if a != b]) # remove duplicates
-        print(fpairs)
         super().__init__(fpairs)

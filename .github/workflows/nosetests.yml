@@ -47,16 +47,22 @@ jobs:
       run: |
          python -c "import sys; print('\n'.join(sys.path))"
          
-    - name: Unit Testing with coverage
+    - name: Unit Testing with coverage using nosetests
       if: matrix.python-version != '3.11'
       run: |
          source activate test-env
          python --version
          conda install -q nose coveralls
          nosetests --exe --with-coverage
+      
+    - name: Run unittest tests
+      if: matrix.python-version != '3.11'
+      run: |
+         source activate test-env
+         python -m unittest discover
 
     # Step to run nosetests without coverage for Python 3.11
-    - name: Unit Testing without coverage
+    - name: Unit Testing without coverage using nosetest
       if: matrix.python-version == '3.11'
       run: |
          source activate test-env

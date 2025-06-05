@@ -66,3 +66,12 @@ class FilePairs:
             self.tuple_indices = sorted(list(product(range(numels), repeat=2)))
 
         self.pairs = [tuple(self.flist[i] for i in indices) for indices in self.tuple_indices]
+
+    def __len__(self):
+        """
+        Returns the number of file pairs.
+
+        Returns:
+            int: Number of file pairs.
+        """
+        return len(self.pairs)

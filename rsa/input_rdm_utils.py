@@ -9,7 +9,8 @@ from rsa.input_rdm import InputRDM
 
 def calc_input_rdm(fpath_src_activations, key="",
                    do_keep_mem_low=False,
-                   num_processes=None):
+                   num_processes=1,
+                   chunksize=10):
     """
     Calculate Input RDM
 
@@ -31,6 +32,7 @@ def calc_input_rdm(fpath_src_activations, key="",
     if do_keep_mem_low:
         ir = InputRDM(acts.reshape(num_samples, -1))
         in_rdm = ir.apply(processes=1 if num_processes is None else num_processes,
+                          chunksize=chunksize,
                           do_disable_tqdm=True)
         from rsa.rdm_utils import triu_off_diag_vec_to_rdm
         in_rdm = triu_off_diag_vec_to_rdm(in_rdm)
@@ -45,10 +47,12 @@ def calc_input_rdm(fpath_src_activations, key="",
 
 def calc_and_save_input_rdm(fpath_src_activations, fpath_dst, key="", do_triu=True,
                             do_keep_mem_low=False,
-                            num_processes=None):
+                            num_processes=None,
+                            chunksize=10):
     in_rdm = calc_input_rdm(fpath_src_activations, key=key,
                             do_keep_mem_low=do_keep_mem_low,
-                            num_processes=num_processes)
+                            num_processes=num_processes,
+                            chunksize=chunksize)
     if do_triu:
         in_rdm = get_triu_off_diag_flat(in_rdm)
         # print(in_rdm.shape)

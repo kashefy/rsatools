@@ -25,7 +25,7 @@ class InputRDM:
             rho, _ = pearsonr(act_row, act_col)
             return dst_idx, 1 - rho
 
-    def apply(self, processes=1, do_disable_tqdm=False):
+    def apply(self, processes=1, chunksize=10, do_disable_tqdm=False):
 
         triu_rows, triu_cols = np.triu_indices(self.num_rows, k=1)
         self.input_rdm_triu = np.zeros((triu_rows.size,)) + ENTRY_EMPTY_INPUT_RDM
@@ -38,7 +38,7 @@ class InputRDM:
                                        for idx, (row, col) in enumerate(zip(triu_rows, triu_cols))],
                                       total=len(triu_rows),
                                       disable=do_disable_tqdm),
-                                  chunksize=10,
+                                  chunksize=chunksize,
                                   )
 
         for idx, dissimilarity in result:

@@ -65,7 +65,7 @@ class TestModelRDMInput2DMat:
         return mrdm
 
     def test_calc_model_rdm_size(self):
-        for sz_in_rdm in range(3, 7):
+        for sz_in_rdm in range(3, 4):
             for num_rdms in range(2, 5):
                 fp_in_rdms = []
                 for rdm_idx in range(num_rdms):

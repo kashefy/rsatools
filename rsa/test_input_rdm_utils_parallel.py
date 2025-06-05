@@ -51,7 +51,6 @@ class BaseTestInputRDMUtilsParallel:
     def test_calc_and_save_input_rdm_return_path(self):
 
         with patch('rsa.input_rdm_utils.InputRDM') as MockInputRDM:
-            # Mock the PearsonCorrcoef instance and its calculate method
             mock_instance = MockInputRDM.return_value
             mock_instance.apply.return_value = np.zeros((3,))  # Mocked return value
 

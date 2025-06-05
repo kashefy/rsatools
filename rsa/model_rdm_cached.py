@@ -1,6 +1,7 @@
 import numpy as np
 from rsa.cache.rdm_cache import RDMCache
 from rsa.model_rdm import ModelRDM
+from rsa.model_rdm_utils import ENTRY_EMPTY
 
 
 class ModelRDMCached(ModelRDM):
@@ -45,4 +46,3 @@ class ModelRDMCached(ModelRDM):
         self.cache.save_to_file(self.fp_cache)
 
         return self.model_rdm_triu
-

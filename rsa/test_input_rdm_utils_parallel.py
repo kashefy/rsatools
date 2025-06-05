@@ -3,6 +3,7 @@ from nose.tools import assert_equal, \
     assert_almost_equals, \
     assert_true, assert_false, \
     assert_raises, assert_list_equal
+from unittest.mock import patch
 import os
 import tempfile
 import shutil
@@ -48,11 +49,21 @@ class BaseTestInputRDMUtilsParallel:
                     assert_equal(el, 0.0)
 
     def test_calc_and_save_input_rdm_return_path(self):
-        for idx in range(5):
-            fpath_dst_arg = os.path.join(self.dir_tmp, 'inrdm_%d.npy' % idx)
-            fpath_dst_ret = input_rdm_utils.calc_and_save_input_rdm(self.fpath_acts, fpath_dst_arg, key=self.key,
-                                                                    do_keep_mem_low=True)
-            assert_equal(fpath_dst_ret, fpath_dst_arg)
+
+        with patch('rsa.input_rdm_utils.InputRDM') as MockInputRDM:
+            # Mock the PearsonCorrcoef instance and its calculate method
+            mock_instance = MockInputRDM.return_value
+            mock_instance.apply.return_value = np.zeros((3,))  # Mocked return value
+
+            for idx in range(5):
+                fpath_dst_arg = os.path.join(self.dir_tmp, 'inrdm_%d.npy' % idx)
+                fpath_dst_ret = input_rdm_utils.calc_and_save_input_rdm(self.fpath_acts, fpath_dst_arg, key=self.key,
+                                                                        do_keep_mem_low=True)
+                assert_equal(fpath_dst_ret, fpath_dst_arg)
+
+            # Assertions to verify behavior
+            # MockPearsonCorrcoef.assert_called_once_with((4, 3))  # Example shape
+            assert_equal(mock_instance.apply.call_count, 5)
 
     def test_calc_and_save_input_rdm_default_dims(self):
 
@@ -177,7 +188,7 @@ class TestInputRDMUtils2DParallel(BaseTestInputRDMUtilsParallel):
     def test_calc_input_rdm_values_offdiag_2D_input(self):
         in_rdm = input_rdm_utils.calc_input_rdm(self.fpath_acts, key=self.key,
                                                 do_keep_mem_low=True)
-        assert_almost_equals(in_rdm[0, 1], 0,15)
+        assert_almost_equals(in_rdm[0, 1], 0, 15)
         assert_equal(in_rdm[0, 2], 2)
         assert_equal(in_rdm[1, 2], 2)
 
@@ -197,7 +208,7 @@ class TestInputRDMUtils2DParallel(BaseTestInputRDMUtilsParallel):
         in_rdm = np.load(fpath_dst)
 
         assert_equal(in_rdm.size, self.num_samples * (self.num_samples - 1) / 2)
-        assert_almost_equals(in_rdm[0], 0,15)
+        assert_almost_equals(in_rdm[0], 0, 15)
         assert_equal(in_rdm[1], 2)
         assert_equal(in_rdm[2], 2)
 

@@ -1,77 +1,31 @@
+# Python
 import unittest
-import tempfile
-import os
-import yaml
-from rsa.cache.rdm_cache import RDMCache
+from rsa.cache.cache_key import CacheKey
 
-
-class TestRDMCache(unittest.TestCase):
+class TestCacheKey(unittest.TestCase):
 
     def setUp(self):
-        self.cache = RDMCache()
+        self.cache_key = CacheKey(separator="__-__")
 
-    def test_add_and_get(self):
-        # Test adding and retrieving a value with file path-like strings
-        self.cache.add("/path/to/file1", "/path/to/file2", 42)
-        self.assertEqual(self.cache.get("/path/to/file1", "/path/to/file2", None), 42)
-        self.assertEqual(self.cache.get("/path/to/file2", "/path/to/file1", None), 42)  # Ensure symmetry
-        self.assertEqual(self.cache.get("/path/to/unknown", "/path/to/file2", "default"),
-                         "default")  # Test default value
+    def test_join_creates_key(self):
+        key = self.cache_key.join("file1", "file2")
+        self.assertEqual(key, "file1__-__file2", "The key should be correctly joined with the separator.")
 
-    def test_save_to_file(self):
-        # Test saving cache to a file
-        self.cache.add("/path/to/file1", "/path/to/file2", 42)
-        self.cache.add("/path/to/file3", "/path/to/file4", 84)
+    def test_join_is_order_independent(self):
+        key1 = self.cache_key.join("file1", "file2")
+        key2 = self.cache_key.join("file2", "file1")
+        self.assertEqual(key1, key2, "The key should be the same regardless of the order of x and y.")
 
-        with tempfile.NamedTemporaryFile(delete=False) as temp_file:
-            fp = temp_file.name
+    def test_split_key(self):
+        key = "file1__-__file2"
+        x, y = self.cache_key.split(key)
+        self.assertEqual(x, "file1", "The first element should be correctly split from the key.")
+        self.assertEqual(y, "file2", "The second element should be correctly split from the key.")
 
-        try:
-            self.cache.save_to_file(fp)
-            with open(fp, 'r') as f:
-                data = yaml.safe_load(f)
-                self.assertIn("cache", data)
-                self.assertIn("flist", data)
-                self.assertIn("separator", data)
-        finally:
-            os.remove(fp)
-
-    def test_load_from_file(self):
-        # Test loading cache from a file
-        cache_data = {
-            "cache": {"0__-__1": 42, "2__-__3": 84},
-            "flist": ["/path/to/file1", "/path/to/file2", "/path/to/file3", "/path/to/file4"],
-            "separator": "__-__"
-        }
-
-        with tempfile.NamedTemporaryFile(delete=False, mode='w') as temp_file:
-            fp = temp_file.name
-            yaml.dump(cache_data, temp_file)
-
-        try:
-            self.cache.load_from_file(fp)
-            self.assertEqual(self.cache.get("/path/to/file1", "/path/to/file2", None), 42)
-            self.assertEqual(self.cache.get("/path/to/file3", "/path/to/file4", None), 84)
-        finally:
-            os.remove(fp)
-
-    def test_save_and_load(self):
-        # Test saving and loading cache
-        self.cache.add("/path/to/file1", "/path/to/file2", 42)
-        self.cache.add("/path/to/file3", "/path/to/file4", 84)
-
-        with tempfile.NamedTemporaryFile(delete=False) as temp_file:
-            fp = temp_file.name
-
-        try:
-            self.cache.save_to_file(fp)
-            new_cache = RDMCache()
-            new_cache.load_from_file(fp)
-            self.assertEqual(new_cache.get("/path/to/file1", "/path/to/file2", None), 42)
-            self.assertEqual(new_cache.get("/path/to/file3", "/path/to/file4", None), 84)
-        finally:
-            os.remove(fp)
-
+    def test_split_and_join_consistency(self):
+        key = self.cache_key.join("file1", "file2")
+        x, y = self.cache_key.split(key)
+        self.assertEqual(key, self.cache_key.join(x, y), "Splitting and rejoining the key should result in the same key.")
 
 if __name__ == "__main__":
     unittest.main()

@@ -54,12 +54,7 @@ jobs:
          python --version
          conda install -q nose coveralls
          nosetests --exe --with-coverage --cover-package rsa
-      
-    - name: Run unittest tests
-      if: matrix.python-version != '3.11'
-      run: |
-         source activate test-env
-         python -m unittest
+         #~ python -m unittest
 
     # Step to run nosetests without coverage for Python 3.11
     - name: Unit Testing without coverage using nosetest

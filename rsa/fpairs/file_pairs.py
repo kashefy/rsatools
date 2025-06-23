@@ -75,3 +75,7 @@ class FilePairs:
             int: Number of file pairs.
         """
         return len(self.pairs)
+
+    def get(self, idx):
+
+        return self.pairs[idx]

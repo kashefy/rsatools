@@ -6,31 +6,24 @@ from tqdm import tqdm
 import numpy as np
 from rsa.model_rdm_utils import calc_spearman_rank_corr_from_files, ENTRY_EMPTY
 from rsa.rdm_loader import RDMLoaderNPY
+from rsa.model_rdm import ModelRDM
 import rsa.mat_utils as mutils
+from rsa.fpairs.file_pairs_utils import create_file_pairs
 
 
-class ModelRDM:
+class ModelRDMPaired(ModelRDM):
 
     def __init__(self, fpath_list):
-        # Oflloaded to loader, but should still check before apply if applicable with loader TODO
-        # for fp in fpath_list:
-        #     if not Path(fp).is_file():
-        #         raise FileNotFoundError(errno.ENOENT, os.strerror(errno.ENOENT), fp)
-        self.fp_list = fpath_list
-        self.num_rows = len(fpath_list) if self.fp_list else 0
-        self.loader = RDMLoaderNPY()
-        self.model_rdm_triu = None
+        self.pairs = create_file_pairs(fpath_list) if fpath_list else None
+        super().__init__(self.pairs.flist if self.pairs else None)
 
-    def set_loader(self, loader):
-        self.loader = loader
-
-    def get_triu_rows_cols(self):
-        triu_rows, triu_cols = np.triu_indices(self.num_rows, k=1)
-        return triu_rows, triu_cols
+    def set_pairs(self, pairs):
+        self.pairs = pairs
+        self.fp_list = self.pairs.flist
 
     def _init_model_rdm_triu(self):
-        triu_rows, triu_cols = self.get_triu_rows_cols()
-        self.model_rdm_triu = np.zeros((triu_rows.size,)) + ENTRY_EMPTY
+        self.numels = len(self.pairs) if self.pairs else 0
+        self.model_rdm_triu = np.zeros((self.numels,)) + ENTRY_EMPTY
 
     def dissimilarity(self, fp_row, fp_col, idx):
 
@@ -40,16 +33,15 @@ class ModelRDM:
 
     def apply(self, processes=1, chunksize=10, do_disable_tqdm=False):
 
-        triu_rows, triu_cols = self.get_triu_rows_cols()
         self._init_model_rdm_triu()
 
         with mp.get_context("spawn").Pool(processes=processes) as pool:
             result = pool.starmap(self.dissimilarity,
                                   tqdm(
-                                      [(self.fp_list[row],
-                                        self.fp_list[col], idx)
-                                       for idx, (row, col) in enumerate(zip(triu_rows, triu_cols))],
-                                      total=len(triu_rows),
+                                      [(self.pairs.get(idx)[0],
+                                        self.pairs.get(idx)[1], idx)
+                                       for idx in range(self.numels)],
+                                      total=self.numels,
                                       disable=do_disable_tqdm),
                                   chunksize=chunksize,
                                   )

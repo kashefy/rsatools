@@ -1,7 +1,6 @@
-from rsa.fpairs import (FilePairsCrossList, # pairs from two lists
-                        FilePairsFromList,  # all pairs from one list
-                        FilePairs)          # pairs already provided
-
+from rsa.fpairs.file_pairs import FilePairs                     # pairs already provided
+from rsa.fpairs.file_pairs_cross_list import FilePairsCrossList # pairs from two lists
+from rsa.fpairs.file_pairs_from_list import FilePairsFromList   # all pairs from one list
 
 def create_file_pairs(flist1, flist2=None):
     """

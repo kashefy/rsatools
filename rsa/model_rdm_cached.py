@@ -8,6 +8,7 @@ class ModelRDMCached(ModelRDM):
 
     def __init__(self, fpath_list, fp_cache):
         super().__init__(fpath_list)
+        self.cache_hits = -1
         self.cache = None
         self.fp_cache = fp_cache
         self.load_cache(self.fp_cache)
@@ -30,6 +31,8 @@ class ModelRDMCached(ModelRDM):
 
             self.model_rdm_triu[idx] = self.cache.get(fp_row, fp_col, ENTRY_EMPTY)
 
+        self.cache_hits = np.count_nonzero(self.model_rdm_triu != ENTRY_EMPTY)
+
     def apply(self, processes=1, chunksize=10, do_disable_tqdm=False):
 
         self.model_rdm_triu = super().apply(processes=processes,
@@ -46,3 +49,7 @@ class ModelRDMCached(ModelRDM):
         self.cache.save_to_file(self.fp_cache)
 
         return self.model_rdm_triu
+
+
+    def get_cache_hits(self):
+        return self.cache_hits

@@ -2,9 +2,12 @@ from nose import tools
 from nose.tools import assert_equal, \
     assert_true, assert_false, \
     assert_raises, assert_list_equal
+import shutil
+import tempfile
 import os
 import yaml
 
+from rsa.cache.rdm_cache import RDMCache
 from rsa.model_rdm_cached import ModelRDMCached
 
 from rsa.test_model_rdm import TestModelRDMInput2DMat, \
@@ -64,3 +67,34 @@ class TestModelRDMCachedInput2DMaInMemoryEmptyCache(TestModelRDMInput2DMaInMemor
         mrdm = helper_calc_model_rdm_with_cache(flist, fp_cache)
 
         return mrdm
+
+
+class TestModelRDMCachedCacheHits:
+
+    @classmethod
+    def setup_class(cls):
+        cls.dir_tmp = tempfile.mkdtemp()
+
+    @classmethod
+    def teardown_class(cls):
+        shutil.rmtree(cls.dir_tmp)
+        pass
+
+    def test_cache_hits_cache_hits_all(self):
+            flist = [os.path.join(self.dir_tmp, fp) for fp in ['a.npy', 'b.npy', 'c.npy']]
+
+            data = {
+                "version": 250605,
+                "cache": {"0__-__1": 0.1, "0__-__2": 0.2, "1__-__2": 0.12},
+                "flist": flist,
+                "separator": "__-__"
+            }
+            cache = RDMCache()
+            cache.load_from_dict(data)
+
+            fp_cache = os.path.join(self.dir_tmp, 'my_cache.yml')
+            cache.save_to_file(fp_cache)
+
+            m = ModelRDMCached(flist, fp_cache)
+            m.apply(do_disable_tqdm=True)
+            assert_equal(m.get_cache_hits(), 3)

@@ -54,7 +54,9 @@ class ModelRDM:
                                   chunksize=chunksize,
                                   )
 
-        for idx, dissimilarity in result:
-            self.model_rdm_triu[idx] = dissimilarity
+        for item in result:
+            if item is not None:
+                idx, dissimilarity = item
+                self.model_rdm_triu[idx] = dissimilarity
         return self.model_rdm_triu
 

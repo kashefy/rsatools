@@ -28,15 +28,15 @@ def rand_rdm(n):
 class TestModelRDMPairedNoInput:
 
     def test_calc_model_rdm_flist_none(self):
-
         m = ModelRDMPaired(None)
         mrdm = m.apply(do_disable_tqdm=True)
         assert_equal(mrdm.size, 0)
 
     def test_calc_model_rdm_flist_empty(self):
-            m = ModelRDMPaired([])
-            mrdm = m.apply(do_disable_tqdm=True)
-            assert_equal(mrdm.size, 0)
+        m = ModelRDMPaired([])
+        mrdm = m.apply(do_disable_tqdm=True)
+        assert_equal(mrdm.size, 0)
+
 
 class TestModelRDMPairedInput2DMat:
 

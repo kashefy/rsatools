@@ -32,6 +32,7 @@ class ModelRDMCached(ModelRDM):
             self.model_rdm_triu[idx] = self.cache.get(fp_row, fp_col, ENTRY_EMPTY)
 
         self.cache_hits = np.count_nonzero(self.model_rdm_triu != ENTRY_EMPTY)
+        self.logger.debug(f"Cache hits: {self.cache_hits} / {self.model_rdm_triu.size} ({(self.cache_hits/self.model_rdm_triu.size)*100:.2f}%)")
 
     def apply(self, processes=1, chunksize=10, do_disable_tqdm=False):
 

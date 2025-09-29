@@ -1,7 +1,6 @@
 import multiprocessing as mp
 import errno
-from pathlib import Path
-import os
+import logging
 from tqdm import tqdm
 import numpy as np
 from rsa.model_rdm_utils import calc_spearman_rank_corr_from_files, ENTRY_EMPTY
@@ -12,6 +11,14 @@ import rsa.mat_utils as mutils
 class ModelRDM:
 
     def __init__(self, fpath_list):
+        self.logger = logging.getLogger(self.__class__.__name__)
+        if not self.logger.hasHandlers():
+            handler = logging.StreamHandler()
+            formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+            handler.setFormatter(formatter)
+            self.logger.addHandler(handler)
+            self.logger.setLevel(logging.INFO)
+        self.logger.debug("Logger initialized.")
         # Oflloaded to loader, but should still check before apply if applicable with loader TODO
         # for fp in fpath_list:
         #     if not Path(fp).is_file():
